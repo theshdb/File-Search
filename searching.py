@@ -1,6 +1,9 @@
 import os
 import pickle
+<<<<<<< HEAD
 import win32api
+=======
+>>>>>>> d650c116bfaa716f71430551ac6515de4f8c573d
 
 
 class Searching:
@@ -52,6 +55,7 @@ class Searching:
             for row in self.results:
                 f.write(row + '\n')
 
+<<<<<<< HEAD
     def Search_without_path(self, term):
         '''collecting all drives in pc.'''
         drives = win32api.GetLogicalDriveStrings()
@@ -85,6 +89,20 @@ def test():
         #     print(match)
         #s.Search_without_path('hello')
 
+=======
+    
+def test():
+        s = Searching()
+        s.create_new_index('D:/')
+        s.search('cnlab')
+
+        print()
+        print(">> There were {:,d} matches out of {:,d} records searched".format(s.matches, s.records))
+        print()
+        print("The query produced the following results: ")
+        for match in s.results:
+            print(match)
+>>>>>>> d650c116bfaa716f71430551ac6515de4f8c573d
 
 test()
 
