@@ -1,7 +1,8 @@
 from tkinter import *
 from tkinter.font import BOLD
 from tkinter import filedialog
-
+import sys
+from Searching import Search_Operations
 
 class GUI(Tk):
     def __init__(self):
@@ -14,6 +15,9 @@ class GUI(Tk):
         self.frame_search = Frame(self, bg="#202020")
         self.frame_search_address = Frame(self, bg="#202020")
         self.frame_file_open = Frame(self, bg="#202020")
+        global s
+        s = Search_Operations()
+        s.load_existing_index()
 
     #func to get the search type from user and process it
     def Search_Option(self):
@@ -81,6 +85,31 @@ class GUI(Tk):
         self.frame_file_open.pack()
         self.frame_file_open.place(x = 70, y= 570)
 
+        #performing search for search types "term" and "file format".
+        if self.variable.get() =="Term" or self.variable.get() == "File Format":
+            s.search(self.variable.get(), self.text_term.get("1.0",'end-1c'))
+
+            print()
+            for f, i in zip(s.results, range(len(s.results))):
+                print(i+1, end='')
+                print("\t"+f)
+            
+            print(">> There were {:,d} matches out of {:,d} records searched".format(s.matches, s.records))
+            print()
+
+
+        #performing search for search type "Last Modified".
+        if self.variable.get() == "Last Modified":
+            pass
+
+        #performing search for search type "Created On".
+        if self.variable.get() == "Created On" :
+            pass
+
+        #performing search for search type "Without Path".
+        if self.variable.get() == "Without Path":
+            s.Search_without_path( self.text_term.get("1.0",'end-1c'))
+
 
     #to open file browser
     def Browse_files(self):
@@ -90,11 +119,14 @@ class GUI(Tk):
 
     #to relocate searching directory
     def Redirect(self):
-        pass
+        s.create_new_index(self.text_address.get("1.0",'end-1c'))
+        print()
+        print("File path has been initialized to search.")
+        print()
 
     #File opening
     def Open(self):
-        pass
+        s.Open_file(int(self.text_number.get("1.0",'end-1c')))
 
     def Widegets(self):
 
