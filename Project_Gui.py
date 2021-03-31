@@ -59,6 +59,19 @@ class GUI(Tk):
             self.frame_file_open.place_forget()
             self.label_term.config(text = "Date : ")
 
+        if self.variable.get() == 'Without Path':
+            self.text_term.delete(1.0, "end")
+            self.frame_search_address.pack_forget()
+            self.frame_search_address.place_forget()
+            self.label_output.pack_forget()
+            self.label_output.place_forget()
+            self.frame_file_open.pack_forget()
+            self.frame_file_open.place_forget()
+            self.label_term.config(text = "Search Term : ")
+            self.label_discription = Label(self, text = "This will search the locations -> C:\\User\\ and other drives present on this PC.", font=("Arial", 12, BOLD), bg='#202020', fg='#9DC88D', relief= FLAT)
+            self.label_discription.pack()
+            self.label_discription.place(x = 70, y=240)
+
     #Search output display
     def Search(self):
         self.label_output.config(text = "")
@@ -100,7 +113,7 @@ class GUI(Tk):
         self.variable = StringVar(self)
         self.variable.set("Term")
 
-        self.search_menu = OptionMenu(self, self.variable, "Term", "File format", "Last Modified", "Created On")
+        self.search_menu = OptionMenu(self, self.variable, "Term", "File format", "Last Modified", "Created On","Without Path")
         self.search_menu.pack()
         self.search_menu.config(bg = "#202020", fg = "#9DC88D")
         self.search_menu.place(x=150, y=90)
