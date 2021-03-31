@@ -2,7 +2,7 @@ import os
 import pickle
 import win32api
 from tkinter import *
-
+import re
 class Search_Operations:
     def __init__(self):
         self.file_index = []
@@ -48,8 +48,8 @@ class Search_Operations:
         
         #save search results.
         with open('search_results.txt', 'w') as f:
-            for row in self.results:
-                f.write(row +  '\n')
+            for row,i in zip(self.results, range(len(self.results))): 
+                f.write (str(i+1) +  "\t" + row +  '\n')
 
     def Search_Modified(self, date):
         pass
@@ -89,7 +89,9 @@ class Search_Operations:
                 i += 1
 
         try:
-            os.system(f'start {os.path.realpath(files_saved[number])}')
+            path = re.sub('\s+', '', files_saved[number])
+            path = path[1:]
+            os.system(f'start {os.path.realpath(path)}')
         except:
             #root.messagebox.showerror("showerror", "Error")
             print("error")

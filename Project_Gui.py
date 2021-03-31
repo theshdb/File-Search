@@ -1,9 +1,8 @@
 from tkinter import *
 from tkinter.font import BOLD
 from tkinter import filedialog
-import sys
 from Searching import Search_Operations
-
+import sys
 class GUI(Tk):
     def __init__(self):
         super().__init__()
@@ -19,6 +18,13 @@ class GUI(Tk):
         s = Search_Operations()
         s.load_existing_index()
 
+    def helper(self):
+        self.text_term.delete(1.0, "end")
+        self.text_output.pack_forget()
+        self.text_output.place_forget()
+        self.frame_file_open.pack_forget()
+        self.frame_file_open.place_forget()
+
     #func to get the search type from user and process it
     def Search_Option(self):
 
@@ -32,45 +38,25 @@ class GUI(Tk):
         self.button_search.place(x=160, y=290)
 
         if self.variable.get() =="Term": 
-            self.text_term.delete(1.0, "end")
-            self.label_output.pack_forget()
-            self.label_output.place_forget()
-            self.frame_file_open.pack_forget()
-            self.frame_file_open.place_forget()
+            self.helper()
             self.label_term.config(text = "Search Term : ")
         
         if self.variable.get() =="File format":
-            self.text_term.delete(1.0, "end")
-            self.label_output.pack_forget()
-            self.label_output.place_forget()
-            self.frame_file_open.pack_forget()
-            self.frame_file_open.place_forget()
+            self.helper()
             self.label_term.config(text = "File format : ")
         
         if self.variable.get() == "Last Modified":
-            self.text_term.delete(1.0, "end")
-            self.label_output.pack_forget()
-            self.label_output.place_forget()
-            self.frame_file_open.pack_forget()
-            self.frame_file_open.place_forget()
+            self.helper()
             self.label_term.config(text = "Files modified after(Date) : ")
 
         if self.variable.get() == "Created On":
-            self.text_term.delete(1.0, "end")
-            self.label_output.pack_forget()
-            self.label_output.place_forget()
-            self.frame_file_open.pack_forget()
-            self.frame_file_open.place_forget()
+            self.helper()
             self.label_term.config(text = "Date : ")
 
         if self.variable.get() == 'Without Path':
-            self.text_term.delete(1.0, "end")
+            self.helper()
             self.frame_search_address.pack_forget()
             self.frame_search_address.place_forget()
-            self.label_output.pack_forget()
-            self.label_output.place_forget()
-            self.frame_file_open.pack_forget()
-            self.frame_file_open.place_forget()
             self.label_term.config(text = "Search Term : ")
             self.label_discription = Label(self, text = "This will search the locations -> C:\\User\\ and other drives present on this PC.", font=("Arial", 12, BOLD), bg='#202020', fg='#9DC88D', relief= FLAT)
             self.label_discription.pack()
@@ -78,9 +64,6 @@ class GUI(Tk):
 
     #Search output display
     def Search(self):
-        self.label_output.config(text = "")
-        self.label_output.pack()
-        self.label_output.place(x = 20, y = 350)
         self.text_number.delete(1.0, "end")
         self.frame_file_open.pack()
         self.frame_file_open.place(x = 70, y= 570)
@@ -89,13 +72,9 @@ class GUI(Tk):
         if self.variable.get() =="Term" or self.variable.get() == "File Format":
             s.search(self.variable.get(), self.text_term.get("1.0",'end-1c'))
 
-            print()
-            for f, i in zip(s.results, range(len(s.results))):
-                print(i+1, end='')
-                print("\t"+f)
-            
-            print(">> There were {:,d} matches out of {:,d} records searched".format(s.matches, s.records))
-            print()
+            self.text_output.configure(state = 'normal')
+            file_result = open('search_results.txt', 'r')
+            self.text_output.insert('end',file_result.read())
 
 
         #performing search for search type "Last Modified".
@@ -120,14 +99,16 @@ class GUI(Tk):
     #to relocate searching directory
     def Redirect(self):
         s.create_new_index(self.text_address.get("1.0",'end-1c'))
-        print()
-        print("File path has been initialized to search.")
-        print()
+        #self.text_output.delete(1.0, "end")
+        self.text_output.pack()
+        self.text_output.place(x = 20, y = 350)
+        self.text_output.insert(1.0, "Directory Path initialize to search." + '\n')
+        self.text_output.configure(state='disabled')
 
     #File opening
     def Open(self):
         s.Open_file(int(self.text_number.get("1.0",'end-1c')))
-
+        
     def Widegets(self):
 
         #Note text
@@ -185,8 +166,8 @@ class GUI(Tk):
         #search button
         self.button_search = Button(self, text = "Search" ,font=("Arial", 14, BOLD), bg = "#4D774E", fg="#FFFFFF", width=9, height=1, command=self.Search)
 
-        #label to display output
-        self.label_output = Label(self, text = "", font=("Arial", 12, BOLD),  fg='#FFFFFF', relief= FLAT, width=65, height = 10)
+        #text field to display output
+        self.text_output = Text(self, width=65, height = 10)
 
 
         '''frame to open file'''
@@ -201,6 +182,7 @@ class GUI(Tk):
         #Open button
         self.button_open = Button(self.frame_file_open, text = "Open" ,font=("Arial", 12, BOLD), bg = "#F1B24A", fg="#202020", width=8, height=1, command=self.Open)
         self.button_open.pack(side = LEFT, padx=5, pady=9)
+
 
 if __name__ == "__main__":
     root = GUI()
