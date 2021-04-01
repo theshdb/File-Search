@@ -217,8 +217,3 @@ class GUI(Tk):
         #Open button
         self.button_open = Button(self.frame_file_open, text = "Open" ,font=("Arial", 12, BOLD), bg = "#F1B24A", fg="#202020", width=8, height=1, command=self.Open)
         self.button_open.pack(side = LEFT, padx=5, pady=9)
-
-
-if __name__ == "__main__":
-    root = GUI()
-    root.mainloop()
