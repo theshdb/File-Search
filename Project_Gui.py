@@ -14,10 +14,14 @@ class GUI(Tk):
         self.frame_search = Frame(self, bg="#202020")
         self.frame_search_address = Frame(self, bg="#202020")
         self.frame_file_open = Frame(self, bg="#202020")
+
         global s
         s = Search_Operations()
         s.load_existing_index()
 
+        self.Widegets()
+
+    #helper function for unpacking
     def helper(self):
         self.text_term.delete(1.0, "end")
         self.text_output.pack_forget()
@@ -25,18 +29,21 @@ class GUI(Tk):
         self.frame_file_open.pack_forget()
         self.frame_file_open.place_forget()
 
+    #writes output to text_output
     def Writing_output(self):
         self.text_output.configure(state = 'normal')
         file_result = open('search_results.txt', 'r')
-        self.text_output.insert('end',file_result.read())
+        self.text_output.delete(1.0, "end")
+        self.text_output.insert(1.0 ,file_result.read())
         self.text_output.configure(state = 'disabled')
 
+    #mouse click event function for text_term
     def clear_search(self, event):
         self.text_term.delete(1.0, "end")
 
     #func to get the search type from user and process it
     def Search_Option(self):
-
+        #initializations
         self.frame_search.pack()
         self.frame_search.place(x=70, y=170) 
 
@@ -69,20 +76,33 @@ class GUI(Tk):
             self.frame_search_address.pack_forget()
             self.frame_search_address.place_forget()
             self.label_term.config(text = "Search Term : ")
-            self.label_discription = Label(self, text = "This will search the locations -> C:\\User\\ and other drives present on this PC.", font=("Arial", 12, BOLD), bg='#202020', fg='#9DC88D', relief= FLAT)
+            self.label_discription = Label(self, text = "This will search the locations -> C:\\User\\ and other drives present on this PC.\nThis may take couple of mins...", font=("Arial", 12, BOLD), bg='#202020', fg='#9DC88D', relief= FLAT)
             self.label_discription.pack()
             self.label_discription.place(x = 70, y=240)
 
+    #helper function to initialize text_output
+    def helper_2(self):
+        self.text_output.pack()
+        self.text_output.place(x = 20, y = 350)
+
+        self.scroll.pack()
+        self.scroll.place(in_=self.text_output, relx=1.0, relheight=1.0, bordermode="outside")
+        self.scroll.config(command=self.text_output.yview)
+
     #Search output display
     def Search(self):
-        self.text_number.delete(1.0, "end")
+        self.helper_2()
+
+        self.text_number.delete(1.0, "end") 
+        self.text_output.delete(1.0, "end")
+
         self.frame_file_open.pack()
         self.frame_file_open.place(x = 70, y= 570)
 
         #performing search for search types "term" and "file format".
-        if ((self.variable.get() =="Term") or (self.variable.get() == "File Format")):
+        if ((self.variable.get() =="Term") or (self.variable.get() == "File format")):
             s.search(self.variable.get(), self.text_term.get("1.0",'end-1c'))
-
+            s.Writing_in_file()
             #prints output
             self.Writing_output()
 
@@ -97,13 +117,15 @@ class GUI(Tk):
 
         #performing search for search type "Created On".
         if self.variable.get() == "Created On" :
-            pass
+            s.Search_Created(self.text_term.get("1.0", "end-1c"))
+            
+            self.Writing_output()
 
         #performing search for search type "Without Path".
         if self.variable.get() == "Without Path":
             s.Search_without_path( self.text_term.get("1.0",'end-1c'))
-
-
+        
+            self.Writing_output()
     #to open file browser
     def Browse_files(self):
         foldername = filedialog.askdirectory()
@@ -113,9 +135,8 @@ class GUI(Tk):
     #to relocate searching directory
     def Redirect(self):
         s.create_new_index(self.text_address.get("1.0",'end-1c'))
-        #self.text_output.delete(1.0, "end")
-        self.text_output.pack()
-        self.text_output.place(x = 20, y = 350)
+        self.helper_2()
+        self.text_output.delete(1.0, "end")
         self.text_output.insert(1.0, "Directory Path initialized to search." + '\n')
         self.text_output.configure(state='disabled')
 
@@ -180,9 +201,9 @@ class GUI(Tk):
         #search button
         self.button_search = Button(self, text = "Search" ,font=("Arial", 14, BOLD), bg = "#4D774E", fg="#FFFFFF", width=9, height=1, command=self.Search)
 
+        self.scroll = Scrollbar(self)
         #text field to display output
-        self.text_output = Text(self, width=65, height = 10)
-
+        self.text_output = Text(self, width=80, height = 10, yscrollcommand=self.scroll.set)
 
         '''frame to open file'''
         #label in frame_open_file
@@ -200,5 +221,4 @@ class GUI(Tk):
 
 if __name__ == "__main__":
     root = GUI()
-    root.Widegets()
     root.mainloop()
