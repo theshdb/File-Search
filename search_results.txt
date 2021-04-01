@@ -1,4 +1,0 @@
-1	D:/C/hello.c
-2	D:/Python/practise/Hello.py
-3	D:/Test/hello.c
-4	D:/Test/hello.txt
