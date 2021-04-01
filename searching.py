@@ -9,6 +9,19 @@ class Search_Operations:
         self.results = []
         self.records = 0
         self.matches = 0
+    
+    #writes into file
+    def Writing_in_file(self):    
+        #save search results.
+        with open('search_results.txt', 'w') as f:
+            for row,i in zip(self.results, range(len(self.results))): 
+                f.write (str(i+1) +  "\t" + row +  '\n')
+
+    def helper(self):
+        #reset variables
+        self.results.clear()
+        self.matches = 0
+        self.records = 0
         
     def create_new_index(self, root_path):
         '''create a new index and save to file'''
@@ -29,9 +42,7 @@ class Search_Operations:
     def search(self, format, word):
         '''search for term based on search type'''
         #reset variables
-        self.results.clear()
-        self.matches = 0
-        self.records = 0
+        self.helper()
 
         #perform serach 
         for path, files in self.file_index:
@@ -45,17 +56,40 @@ class Search_Operations:
                         self.matches += 1
                 else:
                     continue
+
+            
         
-        #save search results.
+        self.Writing_in_file()
+
+    #searches files based on their modification date
+    def Search_Modified(self, number):
+        #reset variables
+        self.helper()
+
+        for path, files in self.file_index:
+            for file in files:
+                result = path.replace('\\', '/') + '/' + file
+                self.results.append(result)
+                
+        #sorting file based on there last modification date (latest first)
+        self.results.sort(key=os.path.getmtime)
+        self.results = list(reversed(self.results))
+
         with open('search_results.txt', 'w') as f:
-            for row,i in zip(self.results, range(len(self.results))): 
-                f.write (str(i+1) +  "\t" + row +  '\n')
-
-    def Search_Modified(self, date):
-        pass
-
+            for row,i in zip(self.results, range(len(self.results))):
+                if(i+1 <= number):
+                    f.write (str(i+1) +  "\t" + row +  '\n')
+                else:
+                    continue
+    
+    #gives all the files careted on given date
     def Search_Created(self, date):
-        pass
+        #reset variables
+        for path, files in self.file_index:
+            for file in files:
+                self.records += 1
+                result = path.replace('\\', '/') + '/' + file
+                self.results.append(result)
 
     def Search_without_path(self, word):
         '''collecting all drives in pc.'''

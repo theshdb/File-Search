@@ -1,0 +1,3 @@
+1	D:/C/a.txt
+2	D:/C/b.txt
+3	D:/C/hello.c

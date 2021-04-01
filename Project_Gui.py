@@ -25,6 +25,15 @@ class GUI(Tk):
         self.frame_file_open.pack_forget()
         self.frame_file_open.place_forget()
 
+    def Writing_output(self):
+        self.text_output.configure(state = 'normal')
+        file_result = open('search_results.txt', 'r')
+        self.text_output.insert('end',file_result.read())
+        self.text_output.configure(state = 'disabled')
+
+    def clear_search(self, event):
+        self.text_term.delete(1.0, "end")
+
     #func to get the search type from user and process it
     def Search_Option(self):
 
@@ -47,11 +56,13 @@ class GUI(Tk):
         
         if self.variable.get() == "Last Modified":
             self.helper()
-            self.label_term.config(text = "Files modified after(Date) : ")
+            self.label_term.config(text = "Number of files to display : ")
 
         if self.variable.get() == "Created On":
             self.helper()
             self.label_term.config(text = "Date : ")
+            self.text_term.insert(1.0, "Mon dd")
+            self.text_term.bind("<Button>", self.clear_search)
 
         if self.variable.get() == 'Without Path':
             self.helper()
@@ -69,17 +80,20 @@ class GUI(Tk):
         self.frame_file_open.place(x = 70, y= 570)
 
         #performing search for search types "term" and "file format".
-        if self.variable.get() =="Term" or self.variable.get() == "File Format":
+        if ((self.variable.get() =="Term") or (self.variable.get() == "File Format")):
             s.search(self.variable.get(), self.text_term.get("1.0",'end-1c'))
 
-            self.text_output.configure(state = 'normal')
-            file_result = open('search_results.txt', 'r')
-            self.text_output.insert('end',file_result.read())
-
+            #prints output
+            self.Writing_output()
 
         #performing search for search type "Last Modified".
         if self.variable.get() == "Last Modified":
-            pass
+            s.Search_Modified(int(self.text_term.get("1.0",'end-1c')))
+
+            #printd output
+            self.text_output.configure(state='normal')
+            self.text_output.insert('end',"ORDER: Recently modified first.\n")
+            self.Writing_output()
 
         #performing search for search type "Created On".
         if self.variable.get() == "Created On" :
@@ -102,7 +116,7 @@ class GUI(Tk):
         #self.text_output.delete(1.0, "end")
         self.text_output.pack()
         self.text_output.place(x = 20, y = 350)
-        self.text_output.insert(1.0, "Directory Path initialize to search." + '\n')
+        self.text_output.insert(1.0, "Directory Path initialized to search." + '\n')
         self.text_output.configure(state='disabled')
 
     #File opening
