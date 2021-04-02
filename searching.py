@@ -137,9 +137,3 @@ class Search_Operations:
         except:
             #root.messagebox.showerror("showerror", "Error")
             print("error")
-
-
-
-
-
-    
